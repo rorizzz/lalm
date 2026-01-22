@@ -5,20 +5,12 @@ A comprehensive toolbox for audio & multimodal understanding tasks including ASR
 📖 **[Read the Tutorial](tutorials/introduction.md)** | 💡 [Examples](examples/) | 🤗 [Models](https://huggingface.co/AudenAI)
 
 ## 🔥 What's New
-
-**January 2026**: Added WenetTransformer & WhisperEncoder • 📖 [Tutorial](tutorials/introduction.md) published
-
-**December 2025**
-- **AzeroS**: Speech-LLM understanding both semantics and paralinguistics (gender, age, emotion) | [examples](examples/azeros/) • [paper](https://arxiv.org/pdf/2601.06086) • 🤗 [model](https://huggingface.co/AudenAI/AzeroS)
-- **TagSpeech**: Unified E2E multi-speaker ASR and diarization with timestamps and speaker attribution | [examples](examples/tagspeech/) • [paper](https://arxiv.org/abs/2501.02665) • model coming soon
-
-**November 2025**
-- **TTA**: Multilingual transcribe, translate, and align model with cross-lingual speech retrieval | [examples](examples/tta/) • [paper](https://arxiv.org/abs/2511.14410) • 🤗 [model](https://huggingface.co/AudenAI/auden-tta-m10)
-- **Voice**: General-purpose voice encoder for speaker verification, emotion, gender, and age classification | [examples](examples/voice/) • [paper](https://arxiv.org/abs/2511.15145) • 🤗 [model](https://huggingface.co/AudenAI/auden-encoder-voice)
-
-<details>
-<summary>Previous updates</summary>
-- 🚀 Initial release with ASR, CLAP, audio captioning, audio tagging
+- **2026-01**: Added [WenetTransformer](src/auden/models/wenet_transformer) & [WhisperEncoder](src/auden/models/whisper_encoder)
+- **2025-12**: Released [AzeroS](examples/azeros/) - Speech-LLM understanding both semantics and paralinguistics (gender, age, emotion)
+- **2025-12**: Released [TagSpeech](examples/tagspeech/) - Unified E2E multi-speaker ASR and diarization with timestamps and speaker attribution
+- **2025-10**: Released [TTA](examples/tta/) - Multilingual transcribe, translate, and align model with cross-lingual speech retrieval
+- **2025-10**: Released [Voice](examples/voice/) - General-purpose voice encoder for speaker verification, emotion, gender, and age classification
+- **2025-09** Initial release with foundation models including ASR, CLAP, audio captioning, audio tagging and LALM etc.
 
 </details>
 
