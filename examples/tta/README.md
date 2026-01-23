@@ -1,52 +1,19 @@
-# TTA Example
+# TTA: Transcribe, Translate and Alignment for Cross-lingual Speech Representation
 
-This example demonstrates training and evaluating a Translate, Transcribe, and Align (TTA) model.
+[![arXiv](https://img.shields.io/badge/arXiv-2511.14410-b31b1b.svg)](https://arxiv.org/abs/2511.14410)
+[![Model TTA-m10](https://img.shields.io/badge/🤗%20HuggingFace-auden--tta--m10-yellow)](https://huggingface.co/AudenAI/auden-tta-m10)
+[![Encoder TTA-m10](https://img.shields.io/badge/🤗%20HuggingFace-auden--encoder--tta--m10-yellow)](https://huggingface.co/AudenAI/auden-encoder-tta-m10)
 
-It follows the same layout as other examples and integrates with Auden's Auto* APIs and BaseTrainer.
+This example presents TTA, a multilingual model that jointly supports transcribe, translate, and align tasks.
+It follows the same layout as other examples and integrates with Auden's Auto* APIs and BaseTrainer. For detailed data composition of our released model, see `data_composition.md`.
 
-## Data Configs
-
-Edit YAMLs under `configs/` to point to your Lhotse CutSet `jsonl.gz` manifests.
-See `data_module.py` docstring for a minimal supervision schema with optional translation.
-
-## Training
-
-Multi-GPU (8 GPUs):
-```bash
-torchrun --nproc_per_node=8 train.py \
-  exp_dir=your/exp/dir \
-  tokenizer=your/tokenizer/dir \
-  model.model_type=tta \
-  model.encoder.model_type=zipformer \
-  data.train_data_config=configs/train_data_config.yaml \
-  data.valid_data_config=configs/valid_data_config.yaml
-```
-
-## Evaluation (batch decoding)
-
-RNNT ASR (greedy):
-```bash
-python evaluate.py \
-  exp_dir=your/exp/dir \
-  checkpoint.filename=your_model_file_name.pt \
-  data.test_data_config=configs/test_data_config.yaml
-```
-
-Note: For translation BLEU evaluation, please install sacrebleu:
-```bash
-pip install sacrebleu
-```
-
-## 🔥 Release of TTA-m10
-### Training Data: 358k hours of public and in-house ASR/ST data
-<p>
-  <img src="assets/data.png" width="60%" />
-  
-  
-  
+<p align="center">
+  <img src="assets/tta.png" width="48%" />
+  <img src="assets/data.png" width="48%" />
 </p>
 
-### 📊 Performance: Multilingual ASR & ST Results
+
+### 📊 TTA Model: Multilingual ASR & ST Results
 
 | Model | #Params | AISHELL1/2 (CER↓) | Wenet (CER↓) | LibriSpeech (WER↓) | CommonVoice (WER↓) | MLS (WER↓) | VoxPopuli (WER↓) | FLEURS (WER↓) | CoVoSTv2 (BLEU↑) |
 |--------|----------|------------------|---------------|---------------------|--------------------|-------------|-------------------|----------------|-------------------|
@@ -71,15 +38,25 @@ TTA shows significantly higher **retrieval accuracy** than Whisper Large-v2, esp
 
 <p>
   <img src="assets/retrieval.png" width="60%" />
-  
-  
-  
 </p>
 
 ---
 
-### Usage
+### 🧩 TTA Encoder: LLM-ASR Encoder Evaluation
 
+| Encoder | Aishell CER↓ | LibriSpeech WER↓ |
+|----------|---------------|------------------|
+| Whisper-Medium | 5.47 | 4.66 |
+| Whisper-Large | 4.87 | 3.64 |
+| ZT-AED | 2.92 | 2.30 |
+| **TTA (Ours)** | **1.92** | **1.95** |
+
+TTA’s encoder achieves **state-of-the-art semantic representation**, enabling seamless LLM integration with high recognition accuracy.
+
+
+## Quick Start
+
+### TTA model
 ```python
 from auden.auto.auto_model import AutoModel
 
@@ -122,22 +99,9 @@ out = model.generate(inputs, task="align", texts=texts)
 print(out["similarities"])  # (B, len(texts))
 print(out["audio_emb"]) # (B, emb_dim)
 print(out["text_emb"]) # (B, emb_dim)
-
 ```
 
-## 🧩 TTA Encoder 
-### ASR-LLM Encoder Evaluation
-
-| Encoder | Aishell CER↓ | LibriSpeech WER↓ |
-|----------|---------------|------------------|
-| Whisper-Medium | 5.47 | 4.66 |
-| Whisper-Large | 4.87 | 3.64 |
-| ZT-AED | 2.92 | 2.30 |
-| **TTA (Ours)** | **1.92** | **1.95** |
-
-TTA’s encoder achieves **state-of-the-art semantic representation**, enabling seamless LLM integration with high recognition accuracy.
-
-### Usage
+### TTA encoder
 ```python
 from auden.auto.auto_model import AutoModel
 encoder = AutoModel.from_pretrained("AudenAI/auden-encoder-tta-m10")
@@ -151,6 +115,47 @@ encoder_output = encoder(x, x_lens)
 print(encoder_output["encoder_out"]) # (B, T//4, D)
 print(encoder_output["encoder_out_lens"]) # (B)
 
+```
+
+## Train Your Model
+
+Multi-GPU (8 GPUs):
+```bash
+torchrun --nproc_per_node=8 train.py \
+  exp_dir=your/exp/dir \
+  tokenizer=your/tokenizer/dir \
+  model.model_type=tta \
+  model.encoder.model_type=zipformer \
+  data.train_data_config=configs/train_data_config.yaml \
+  data.valid_data_config=configs/valid_data_config.yaml
+```
+
+### Installation
+
+No extra dependencies are required beyond the Auden base environment.
+For BLEU evaluation in speech translation, please install:
+```bash
+pip install sacrebleu
+```
+
+### Data Configs
+
+Edit YAMLs under `configs/` to point to your Lhotse CutSet `jsonl.gz` manifests.
+See `data_module.py` docstring for a minimal supervision schema with optional translation.
+
+### Evaluation
+
+RNNT ASR (greedy):
+```bash
+python evaluate.py \
+  exp_dir=your/exp/dir \
+  checkpoint.filename=your_model_file_name.pt \
+  data.test_data_config=configs/test_data_config.yaml
+```
+
+Note: For translation BLEU evaluation, please install sacrebleu:
+```bash
+pip install sacrebleu
 ```
 
 ## Citation
