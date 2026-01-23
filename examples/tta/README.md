@@ -5,7 +5,7 @@
 [![Encoder TTA-m10](https://img.shields.io/badge/🤗%20HuggingFace-auden--encoder--tta--m10-yellow)](https://huggingface.co/AudenAI/auden-encoder-tta-m10)
 
 This example presents TTA, a multilingual model that jointly supports transcribe, translate, and align tasks.
-It follows the same layout as other examples and integrates with Auden's Auto* APIs and BaseTrainer. For detailed data composition of our released model, see `data_composition.md`.
+It follows the same layout as other examples and integrates with Auden's Auto* APIs and BaseTrainer. For detailed data composition of our released model, see [`data_composition.md`](data_composition.md).
 
 <p align="center">
   <img src="assets/tta.png" width="48%" />
@@ -128,14 +128,6 @@ torchrun --nproc_per_node=8 train.py \
   model.encoder.model_type=zipformer \
   data.train_data_config=configs/train_data_config.yaml \
   data.valid_data_config=configs/valid_data_config.yaml
-```
-
-### Installation
-
-No extra dependencies are required beyond the Auden base environment.
-For BLEU evaluation in speech translation, please install:
-```bash
-pip install sacrebleu
 ```
 
 ### Data Configs
