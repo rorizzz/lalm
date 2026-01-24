@@ -1,36 +1,20 @@
 # AZeroS Example
 
-This example demonstrates training and evaluating an AZeroS model.
+[![arXiv](https://img.shields.io/badge/arXiv-2601.06086-b31b1b.svg)](https://arxiv.org/pdf/2601.06086)
+[![Model AZeroS](https://img.shields.io/badge/🤗%20HuggingFace-azeros-yellow)](https://huggingface.co/AudenAI/azeros)
 
-It follows the same layout as other examples and integrates with Auden's Auto* APIs and BaseTrainer.
+This example demonstrates AZeroS (Auden Zero-instruction-tuned Speech-LLM), a speech–LLM built with
+Self-Generated Instruction-Free Tuning (SIFT) to extend LLMs to speech without task-specific
+instruction data. AZeroS freezes the LLM and audio encoders, and trains lightweight projection
+modules on speech–text pairs to achieve strong semantic + paralinguistic performance with modest
+training cost.
 
-## Data Configs
-Please refer to `configs/README.md` for data preparation and formats.
+<p>
+  <img src="assets/azeros.png" width="60%" />
+</p>
 
-Edit YAMLs under `configs/` to point to your Lhotse CutSet `jsonl.gz` manifests.
-See `data_module.py` docstring for a minimal supervision schema with LLM instruction and response.
+## Quick Start
 
-## Training
-We adopt a 2-stage training procedure as follows.
-
-- `scripts/train_stage1.sh`: Training a semantic encoder projector.
-- `scripts/train_stage2.sh`: Training a paralinguistic encoder projector with the pretrained semantic branch.
-
-## Inference Guide
-Run `model.generate` for batch decoding.
-
-Demo of usage:
-```bash
-python evaluate.py \
-  exp_dir=your/exp/dir \
-  checkpoint.filename=your_model_file_name.pt \
-  data.test_data_config=configs/test_data_config.yaml
-```
-
----
-
-## 🔥 Release of AZeroS
-### 🤗 HuggingFace Checkpoint https://huggingface.co/AudenAI/azeros
 ```python
 import torch
 from model import AZerosModel
@@ -64,18 +48,14 @@ generate_config = {
 outputs = model.generate(wav_files, messages, **generate_config)
 print(outputs)
 ```
-We also provide a deployment script under `scripts/deploy_demo/`.
 
-### Model Overview
-
-<p>
-  <img src="assets/azeros.png" width="60%" />
-</p>
+## Deployment
+We also provide a deployment script under `scripts/deploy_demo/` with cascaded TTS module (CoisyVoice2) for voice interaction.
 
 
-### Training Data: WenetSpeech + GigaSpeech + CommonVoice + Public Age/Gender/Emotion Data
 
-Please refer to `configs/README.md` for details of datasets.
+## Training Data
+We use all public available open-source data to train AZeroS. Below is the summary of the data composition. Please refer to `configs/README.md` and our [paper](https://arxiv.org/pdf/2601.06086) for more details of data preparation.
 
 | Dataset | Annotations | Hours |
 | :--- | :--- | ---: |
@@ -97,8 +77,6 @@ Please refer to `configs/README.md` for details of datasets.
 | GigaSpeech | transcript | 9396 |
 | CommonVoice | transcript | 2702 |
 | ***Data-S Total*** | | ***21783*** |
-
-We adopt `Self-generated Instruction(-Free) Tuning` to achieve seamless speech-to-text alignment with a frozen LLM.
 
 
 ### 📊 Performance: VoiceBench
@@ -145,3 +123,32 @@ We adopt `Self-generated Instruction(-Free) Tuning` to achieve seamless speech-t
 **Highlights:**
 - AZeroS achieves *state-of-the-art* performance on both semantic and parallinguistic tasks with only opensource data, compared to other systems with similar model size.
 - AZeroS demonstrates the effectiveness of the `Self-generated Instruction-Free Tuning` method with nearly no drop on generalization abilities.
+
+---
+
+## Train Your Own Model
+
+### Data Configs
+Please refer to `configs/README.md` for data preparation and formats.
+
+Edit YAMLs under `configs/` to point to your Lhotse CutSet `jsonl.gz` manifests.
+See `data_module.py` docstring for a minimal supervision schema with LLM instruction and response.
+
+### Training
+We adopt a 2-stage training procedure as follows.
+
+- `scripts/train_stage1.sh`: Training a semantic encoder projector.
+- `scripts/train_stage2.sh`: Training a paralinguistic encoder projector with the pretrained semantic branch.
+
+## Citation
+
+If you use AZeroS in your research, please cite:
+
+```bibtex
+@article{shao2026azeros,
+  title={AZEROS: Extending LLM to Speech with Self-Generated Instruction-Free Tuning},
+  author={Shao, Yiwen and Liu, Wei and Li, Jiahong and Wang, Tianzi and Wei, Kun and Yu, Meng and Yu, Dong},
+  journal={arXiv preprint arXiv:2601.06086},
+  year={2026}
+}
+```
