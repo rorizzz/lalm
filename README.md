@@ -5,6 +5,7 @@ A comprehensive toolbox for audio & multimodal understanding tasks including ASR
 📖 **[Read the Tutorial](tutorials/introduction.md)** | 💡 [Examples](examples/) | 🤗 [Models](https://huggingface.co/AudenAI)
 
 ## 🔥 What's New
+- **2026-01**: Released pretrained ASR models [`AudenAI/auden-asr-zh-stream`](https://huggingface.co/AudenAI/auden-asr-zh-stream) and [`AudenAI/auden-asr-zh-en`](https://huggingface.co/AudenAI/auden-asr-zh-en)
 - **2026-01**: Added [WenetTransformer](src/auden/models/wenet_transformer) & [WhisperEncoder](src/auden/models/whisper_encoder)
 - **2025-12**: Released [AzeroS](examples/azeros/) - Speech-LLM understanding both semantics and paralinguistics (gender, age, emotion)
 - **2025-12**: Released [TagSpeech](examples/tagspeech/) - Unified E2E multi-speaker ASR and diarization with timestamps and speaker attribution
