@@ -28,7 +28,7 @@ master_port=${MASTER_PORT:-29500}
 
 # ── Model ─────────────────────────────────────────────────────────────────────
 # Point to the checkpoint created by scripts/build_model.sh.
-model_dir="./models/aut_qwen2_7b_ds1"
+model_dir="./models/qwen25omni_qwen25_7b_ds2"
 mixed_precision=bf16
 
 # Modules to freeze: "audio_tower" for stage-1 (projector-only training).
@@ -36,7 +36,7 @@ mixed_precision=bf16
 frozen_modules="audio_tower,language_model"
 
 # ── Experiment ────────────────────────────────────────────────────────────────
-exp_name=aut_qwen2_7b_ds1_asr
+exp_name=qwen25omni_qwen25_7b_ds2_align
 exp_dir="./exp/$exp_name"
 
 echo "========================================================"
@@ -71,4 +71,6 @@ torchrun \
         data.max_duration=30.0 \
         data.use_infinite_dataset=true \
         data.num_workers=8 \
-        data.sampler.max_tokens=2000
+        data.sampler.max_tokens=4000
+
+# 2000->4000

@@ -18,7 +18,7 @@ from auden.utils.text_normalization import text_normalization
 
 
 def _build_conversation(cut, instruction=None, system=None):
-    response = cut.supervisions[0].text  # set it to your own response field
+    response = cut.supervisions[0].custom.get("answer", cut.supervisions[0].text)  # set it to your own response field
     response = text_normalization(
         response,
         case="lower",

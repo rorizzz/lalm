@@ -202,7 +202,7 @@ def main(cfg: DictConfig):
             )
 
             hyps = processor.batch_decode(output_ids, skip_special_tokens=True)
-            refs = [cut.supervisions[0].text for cut in cuts]
+            refs = [cut.supervisions[0].custom.get("answer", cut.supervisions[0].text) for cut in cuts]
             cut_ids = [cut.id for cut in cuts]
 
             def norm(s):
