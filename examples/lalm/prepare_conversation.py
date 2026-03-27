@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Offline prepare cut.conversation for LALM training.
 
 This script reads a Lhotse CutSet manifest, builds a conversation object for each
@@ -12,6 +11,7 @@ import argparse
 from pathlib import Path
 
 from lhotse import CutSet
+from tqdm import tqdm
 from transformers import AutoTokenizer
 
 from auden.utils.text_normalization import text_normalization
@@ -139,14 +139,17 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(args.tokenizer)
 
     cuts = CutSet.from_file(args.input_manifest)
-    prepared = cuts.map(
-        lambda c: prepare_cut(
-            c,
-            tokenizer=tokenizer,
-            instruction=args.instruction,
-            system=args.system,
+    prepared = []
+    for cut in tqdm(cuts, desc="Preparing conversations"):
+        prepared.append(
+            prepare_cut(
+                cut,
+                tokenizer=tokenizer,
+                instruction=args.instruction,
+                system=args.system,
+            )
         )
-    )
+    prepared = CutSet.from_cuts(prepared)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     prepared.to_file(str(out_path))
