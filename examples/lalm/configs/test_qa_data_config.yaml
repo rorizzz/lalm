@@ -1,0 +1,2 @@
+- name: mmau_test_mini
+  manifest: data/test/mmau_test_mini_conversation.jsonl.gz
