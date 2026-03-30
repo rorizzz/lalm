@@ -27,6 +27,12 @@ _DEFAULT_SYSTEM = (
     "Listen to the audio and answer the question concisely."
 )
 
+# single
+# _DEFAULT_SYSTEM = (
+#     "You are an audio understanding assistant. "
+#     "Listen to the audio and answer the question directly. Give only the answer, no explanation."
+# )
+
 
 def _build_conversation(cut, system: str):
     question = cut.supervisions[0].custom["question"]
