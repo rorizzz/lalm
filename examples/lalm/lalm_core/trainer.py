@@ -30,6 +30,12 @@ class LALMTrainer(BaseTrainer):
 
         model = model.to(self.device)
 
+        # GradScaler (fp16) requires fp32 params so that grads are fp32.                                                                                
+        for p in model.parameters():
+            if p.requires_grad and p.dtype != torch.float32:                                                                                            
+                p.data = p.data.float() 
+        
+
         if self.world_size > 1:
             model = DDP(
                 model,
@@ -119,7 +125,15 @@ class LALMTrainer(BaseTrainer):
         if audio_param is not None and audio_features.dtype != audio_param.dtype:
             audio_features = audio_features.to(dtype=audio_param.dtype)
 
-        with torch.set_grad_enabled(is_training):
+        amp_dtype = (
+            torch.float16
+            if self.mixed_precision == "fp16"
+            else torch.bfloat16 if self.mixed_precision == "bf16" else None
+        )
+
+        with torch.set_grad_enabled(is_training), torch.amp.autocast(
+            "cuda", enabled=amp_dtype is not None, dtype=amp_dtype
+        ):
             outputs = self.model(
                 input_ids=input_ids,
                 audio_features=audio_features,
